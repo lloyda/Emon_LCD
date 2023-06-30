@@ -40,12 +40,12 @@
 GLCD_ST7565 glcd;
 
 #define ONE_WIRE_BUS 5              // temperature sensor connection - hard wired 
-const int greenLED = 6;             // Green tri-color LED - dig 8 for emonGLCD V1.2
-const int redLED = 9;               // Red tri-color LED
-const int enterswitchpin = 15;		  // digital pin of onboard pushswitch
-const int LDRpin = 4;    		        // analog pin of onboard lightsensor
-const int upswitchpin = 16;         // digital pin of up switch - low when pressed
-const int downswitchpin = 19;       // digital pin of down switch - low when pressed
+const byte greenLED = 6;             // Green tri-color LED - dig 8 for emonGLCD V1.2
+const byte redLED = 9;               // Red tri-color LED
+const byte enterswitchpin = 15;		  // digital pin of onboard pushswitch
+const byte LDRpin = 4;    		        // analog pin of onboard lightsensor
+const byte upswitchpin = 16;         // digital pin of up switch - low when pressed
+const byte downswitchpin = 19;       // digital pin of down switch - low when pressed
 //--------------------------------------------------------------------------------------------
 // RFM12B Setup
 //--------------------------------------------------------------------------------------------
@@ -53,9 +53,9 @@ const int downswitchpin = 19;       // digital pin of down switch - low when pre
 #define freq RF12_868MHZ     //frequency - match to same frequency as RFM12B module (change to 868Mhz or 915Mhz if appropriate)
 #define group 210            //network group, must be same as emonTx and emonBase
 
-const int Immersion_nodeID = 5;
-const int emonTx_nodeID = 10;
-const int emonBase_nodeID = 15;
+const byte Immersion_nodeID = 5;
+const byte emonTx_nodeID = 10;
+const byte emonBase_nodeID = 15;
 
 
 //---------------------------------------------------
@@ -85,10 +85,10 @@ PayloadImm ImmerCtl;
 //--------------------------------------------------------------------------------------------
 // Power variables
 //--------------------------------------------------------------------------------------------
-int importing, night;                                  //flag to indicate import/export
+byte importing, night;                                  //flag to indicate import/export
 double consuming, gen, grid, wh_gen, wh_consuming, immersion;     //integer variables to store ammout of power currenty being consumed grid (in/out) +gen
 unsigned long whtime;                    	       //used to calculate energy used per day (kWh/d)
-boolean immersionOn = false;
+bool immersionOn = false;
 //--------------------------------------------------------------------------------------------
 // DS18B20 temperature setup - onboard sensor
 //--------------------------------------------------------------------------------------------
@@ -100,8 +100,8 @@ double insideTemp, outsideTemp, maxtemp, mintemp;
 // Software RTC setup
 //--------------------------------------------------------------------------------------------
 RTC_Millis RTC;
-int hour;
-int gmtOffset = 0;
+byte hour;
+byte gmtOffset = 0;
 
 //--------------------------------------------------------------------------------------------
 // Flow control
@@ -111,7 +111,7 @@ unsigned long last_emonbase;                   // Used to count time from last e
 unsigned long slow_update;                   // Used to count time for slow 10s events
 unsigned long fast_update;                   // Used to count time for fast 100ms events
 
-int LDR;
+byte LDR;
 
 //--------------------------------------------------------------------------------------------
 // Setup
@@ -153,7 +153,7 @@ void loop () {
   if (rf12_recvDone()) {
     if (rf12_crc == 0 && (rf12_hdr & RF12_HDR_CTL) == 0)  // and no rf errors
     {
-      int node_id = (rf12_hdr & 0x1F);
+      byte node_id = (rf12_hdr & 0x1F);
 
       if (node_id == emonTx_nodeID)                        // === EMONTX node ID ====
       {
@@ -161,7 +161,6 @@ void loop () {
         emontx = *(PayloadTX*) rf12_data;       // get emontx payload data
 #ifdef DEBUG
         print_emontx_payload();               // print data to serial
-        //           delay(100);                             // delay to make sure printing finished
 #endif
         power_calculations();                   // do the power calculations
       }
@@ -171,7 +170,6 @@ void loop () {
         ImmerCtl = *(PayloadImm*) rf12_data;    // get emontx payload data
 #ifdef DEBUG
         print_immersion_payload();
-        //                     delay(100);                             // delay to make sure printing finished
 #endif
       }
 
@@ -244,13 +242,12 @@ void loop () {
   {
     fast_update = millis();
     draw_main_screen();
-    led_intensity();
   }
 
   //Read switches
-  int S1 = digitalRead(enterswitchpin); //low when pressed
-  int S2 = digitalRead(upswitchpin);  //low when pressed
-  int S3 = digitalRead(downswitchpin); //low when pressed
+  byte S1 = digitalRead(enterswitchpin); //low when pressed
+  byte S2 = digitalRead(upswitchpin);  //low when pressed
+  byte S3 = digitalRead(downswitchpin); //low when pressed
 
   if (S1 == 0) draw_page_two();       //if enter switch (top) is pressed display 2nd page
   if (S2 == 0) draw_page_three(LDR);
@@ -275,7 +272,7 @@ void loop () {
 void power_calculations()
 {
   DateTime now = RTC.now();
-  int last_hour = hour;
+  byte last_hour = hour;
   hour = now.hour();
   if (last_hour == 23 && hour == 00) {
     wh_gen = 0;

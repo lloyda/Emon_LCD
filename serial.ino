@@ -1,12 +1,12 @@
 void print_glcd_setup()
 {
-  Serial.println("emonGLCD solar PV monitor");
-  Serial.print("Node: ");
+  Serial.println(F("emonGLCD solar PV monitor"));
+  Serial.print(F("Node: "));
   Serial.print(MYNODE);
-  Serial.print(" Freq: ");
-  if (freq == RF12_433MHZ) Serial.print("433Mhz");
-  if (freq == RF12_868MHZ) Serial.print("868Mhz");
-  Serial.print(" Network: ");
+  Serial.print(F(" Freq: "));
+  if (freq == RF12_433MHZ) Serial.print(F("433Mhz"));
+  if (freq == RF12_868MHZ) Serial.print(F("868Mhz"));
+  Serial.print(F(" Network: "));
   Serial.println(group);
   Serial.flush();
 }
