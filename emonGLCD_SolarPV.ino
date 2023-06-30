@@ -24,7 +24,7 @@
 // http://openenergymonitor.org/emon/license
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-//#define DEBUG 1
+#define DEBUG 1
 
 #include <OneWire.h>		    // http://www.pjrc.com/teensy/td_libs_OneWire.html
 #include <DallasTemperature.h>      // http://download.milesburton.com/Arduino/MaximTemperature/ (3.7.2 Beta needed for Arduino 1.0)
@@ -123,8 +123,8 @@ void setup () {
   glcd.backLight(150); //max 255
 
 #ifdef DEBUG
-  Serial.begin(115200);
-  //      print_glcd_setup();
+  Serial.begin(230400);
+  print_glcd_setup();
 #endif
 
   pinMode(greenLED, OUTPUT); pinMode(redLED, OUTPUT);
@@ -160,8 +160,8 @@ void loop () {
         last_emontx = millis();                 // set time of last update to now
         emontx = *(PayloadTX*) rf12_data;       // get emontx payload data
 #ifdef DEBUG
-        //  print_emontx_payload();               // print data to serial
-        //   delay(100);                             // delay to make sure printing finished
+        print_emontx_payload();               // print data to serial
+        //           delay(100);                             // delay to make sure printing finished
 #endif
         power_calculations();                   // do the power calculations
       }
@@ -170,8 +170,8 @@ void loop () {
       {
         ImmerCtl = *(PayloadImm*) rf12_data;    // get emontx payload data
 #ifdef DEBUG
-        //             print_immersion_payload();
-        //             delay(100);                             // delay to make sure printing finished
+        print_immersion_payload();
+        //                     delay(100);                             // delay to make sure printing finished
 #endif
       }
 
@@ -245,7 +245,6 @@ void loop () {
     fast_update = millis();
     draw_main_screen();
     led_intensity();
-
   }
 
   //Read switches
