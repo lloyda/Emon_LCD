@@ -24,7 +24,7 @@ void draw_main_screen()
   glcd.drawLine(64, 0, 64, 64, WHITE);      //top vertical line
   glcd.drawLine(0, 32, 128, 32, WHITE);     //middle horizontal line
 
-  char str[40];    			 //variable to store conversion
+  char str[41];    			 //variable to store conversion
   glcd.setFont(font_clR6x8);
   glcd.drawString_P(12, 0, PSTR("using"));
   glcd.drawString_P(69, 0, PSTR("solar PV"));
@@ -70,9 +70,11 @@ void draw_main_screen()
   glcd.drawString(71, 26, str);
 
   if (immersionOn) {
-    dtostrf((double)ImmerCtl.temperature / 100, 0, 1, str);
-    strcat(str, "C");
-    glcd.drawString(70, 58, str);
+    if (ImmerCtl.temperature > 0 && ImmerCtl.temperature < 9000) {
+      dtostrf((double)ImmerCtl.temperature / 100, 0, 1, str);
+      strcat(str, "C");
+      glcd.drawString(70, 58, str);
+    }
     dtostrf(outsideTemp, 0, 1, str);
     strcat(str, "C");
     glcd.drawString(105, 58, str);
@@ -83,18 +85,15 @@ void draw_main_screen()
     //        itoa((int)mintemp,str,10);
     dtostrf((double)mintemp, 0, 1, str);
     strcat(str, "C");
-    //        glcd.drawString_P(68,58,PSTR("min"));
-    glcd.drawString(74, 58, str);
-    //                glcd.drawString(82,58,str);
 
-    //	itoa((int)maxtemp,str,10);
+    glcd.drawString(74, 58, str);
+
     glcd.drawLine(100, 59, 100, 63, WHITE);
     glcd.drawLine(100, 59, 98, 61, WHITE);
     glcd.drawLine(100, 59, 102, 61, WHITE);
     dtostrf((double)maxtemp, 0, 1, str);
     strcat(str, "C");
-    //	glcd.drawString_P(97,58,PSTR("max"));
-    //	glcd.drawString(111,58,str);
+
     glcd.drawString(104, 58, str);
   }
 
@@ -105,8 +104,7 @@ void draw_main_screen()
   else {
 
     DateTime now = RTC.now();
-    //  glcd.drawString_P(5,58,PSTR("Time:"));
-    char str2[3];
+    char str2[4];
     itoa((int)now.hour(), str, 10);
     if  (now.minute() < 10) strcat(str, ":0"); else strcat(str, ":");
     itoa((int)now.minute(), str2, 10);
